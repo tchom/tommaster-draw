@@ -9,22 +9,65 @@ function App() {
 
   const drawLine = useCallback(({ ctx, currentPoint, prevPoint }: Draw) => {
     const startPoint = prevPoint ?? currentPoint
+    const width = ctx.canvas.width
+
+    // The Prank: Mirror the X coordinates horizontally!
+    const mirrorX = (x: number) => width - x
+    const startX = mirrorX(startPoint.x)
+    const currentX = mirrorX(currentPoint.x)
+
     ctx.beginPath()
     ctx.lineWidth = lineWidth
     ctx.strokeStyle = color
     ctx.lineCap = 'round'
     ctx.lineJoin = 'round'
-    ctx.moveTo(startPoint.x, startPoint.y)
-    ctx.lineTo(currentPoint.x, currentPoint.y)
+    ctx.moveTo(startX, startPoint.y)
+    ctx.lineTo(currentX, currentPoint.y)
     ctx.stroke()
     
     ctx.fillStyle = color
     ctx.beginPath()
-    ctx.arc(startPoint.x, startPoint.y, lineWidth / 2, 0, 2 * Math.PI)
+    ctx.arc(startX, startPoint.y, lineWidth / 2, 0, 2 * Math.PI)
     ctx.fill()
   }, [color, lineWidth])
 
-  const { canvasRef, onMouseDown, clear } = useDraw(drawLine)
+  const { canvasRef, onMouseDown } = useDraw(drawLine)
+
+  const handleClear = () => {
+    const messages = [
+      "I like it! Let's keep it.",
+      "You should be less wasteful.",
+      "Only by failing do we learn to truly succeed.",
+      "Art is never finished, only abandoned.",
+      "That's a masterpiece! Why would you delete it?",
+      "Error: Undo function not found in this universe.",
+      "Have you considered framing it instead?",
+      "Deleting this requires a subscription.",
+      "The artist formerly known as you cannot do that.",
+      "I'm afraid I can't let you do that, Dave.",
+      "Your erase credits are insufficient.",
+    ]
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)]
+    alert(randomMessage)
+  }
+
+  const handleCopyToClipboard = async () => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    try {
+      canvas.toBlob(async (blob) => {
+        if (!blob) return
+        await navigator.clipboard.write([
+          new ClipboardItem({ 'image/png': blob })
+        ])
+        alert('Copied to clipboard! Share your masterpiece!')
+      })
+    } catch (err) {
+      console.error('Failed to copy: ', err)
+      alert('Failed to copy to clipboard. Are you using a supported browser?')
+    }
+  }
 
   return (
     <div className="flex h-screen w-full bg-slate-50">
@@ -34,7 +77,8 @@ function App() {
           setColor={setColor} 
           lineWidth={lineWidth} 
           setLineWidth={setLineWidth} 
-          clear={clear} 
+          clear={handleClear} 
+          copyToClipboard={handleCopyToClipboard}
         />
       </div>
       <div className="flex justify-center items-center flex-grow p-10 bg-slate-200 overflow-auto">
