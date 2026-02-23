@@ -29,9 +29,10 @@ interface ToolbarProps {
   setLineWidth: (width: number) => void
   clear: () => void
   copyToClipboard: () => void
+  setEraser: () => void
 }
 
-const Toolbar: FC<ToolbarProps> = ({ color, setColor, lineWidth, setLineWidth, clear, copyToClipboard }) => {
+const Toolbar: FC<ToolbarProps> = ({ color, setColor, lineWidth, setLineWidth, clear, copyToClipboard, setEraser }) => {
   return (
     <div className="flex flex-col gap-6 p-6 items-center w-64 h-full bg-white text-gray-800">
       
@@ -88,6 +89,22 @@ const Toolbar: FC<ToolbarProps> = ({ color, setColor, lineWidth, setLineWidth, c
 
       {/* Actions */}
       <div className="w-full mt-auto pb-4 flex flex-col gap-3">
+        <button 
+          onClick={setEraser}
+          className={clsx(
+            "w-full py-3 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors font-bold shadow-sm active:scale-95 flex items-center justify-center gap-2 group",
+            (color === '#FFFFFF' || color === '#FCFCFC') && lineWidth === 50 && "ring-2 ring-blue-500 ring-offset-2 border-transparent z-10"
+          )}
+        >
+          <svg className="w-5 h-5 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" transform="rotate(180 12 12)" />
+            {/* Using a rotated arrow or pen-like shape to represent eraser, or stick to simple trash for now? */}
+            {/* Let's use a box with lines */}
+             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          Eraser (Large)
+        </button>
+
         <button 
           onClick={copyToClipboard}
           className="w-full py-3 bg-blue-50 text-blue-600 border border-blue-200 rounded-lg hover:bg-blue-100 transition-colors font-bold shadow-sm active:scale-95 flex items-center justify-center gap-2 group"

@@ -69,6 +69,11 @@ function App() {
     }
   }
 
+  const handleSetEraser = () => {
+    setColor('#FFFFFF')
+    setLineWidth(50)
+  }
+
   return (
     <div className="flex h-screen w-full bg-slate-50">
       <div className="flex-shrink-0 bg-white border-r border-gray-200 h-full overflow-y-auto">
@@ -79,6 +84,7 @@ function App() {
           setLineWidth={setLineWidth} 
           clear={handleClear} 
           copyToClipboard={handleCopyToClipboard}
+          setEraser={handleSetEraser}
         />
       </div>
       <div className="flex justify-center items-center flex-grow p-10 bg-slate-200 overflow-auto">
